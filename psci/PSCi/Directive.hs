@@ -45,6 +45,7 @@ directiveStrings =
     , (Foreign, ["foreign"])
     , (Type   , ["type"])
     , (Kind   , ["kind"])
+    , (Info   , ["info"])
     , (Show   , ["show"])
     ]
 
@@ -113,7 +114,7 @@ help =
   , (Foreign, "<file>",   "Load foreign module <file>")
   , (Type,    "<expr>",   "Show the type of <expr>")
   , (Kind,    "<type>",   "Show the kind of <type>")
+  , (Info,    "<name>",   "Show information about the given <name>")
   , (Show,    "import",   "Show all imported modules")
   , (Show,    "loaded",   "Show all loaded modules")
   ]
-

@@ -214,5 +214,6 @@ data Directive
   | Foreign
   | Type
   | Kind
+  | Info
   | Show
   deriving (Eq, Show)
