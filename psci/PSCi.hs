@@ -53,7 +53,7 @@ newtype PSCI a = PSCI { runPSCI :: InputT (StateT PSCiState IO) a }
                deriving (Functor, Applicative, Monad)
 
 psciIO :: IO a -> PSCI a
-psciIO io = PSCI . lift $ lift io
+psciIO = PSCI . lift . lift
 
 -- |
 -- The runner
@@ -237,7 +237,7 @@ handleShowLoadedModules = do
 --
 handleShowImportedModules :: PSCI ()
 handleShowImportedModules = do
-  PSCiState { psciImportedModules = importedModules } <- PSCI $ lift get
+  importedModules <- PSCI . lift $ gets psciImportedModules
   psciIO $ showModules importedModules >>= putStrLn
   return ()
   where
