@@ -147,7 +147,7 @@ getCommand singleLineMode = handleInterrupt (return (Right Nothing)) $ do
   case firstLine of
     Nothing -> return (Right (Just QuitPSCi)) -- Ctrl-D when input is empty
     Just "" -> return (Right Nothing)
-    Just s | singleLineMode || head s == ':' -> return .fmap Just $ parseCommand s
+    Just s | singleLineMode || head s == ':' -> return . fmap Just $ parseCommand s
     Just s -> fmap Just . parseCommand <$> go [s]
   where
     go :: [String] -> InputT (StateT PSCiState IO) String
