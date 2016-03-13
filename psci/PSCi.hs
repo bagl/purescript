@@ -180,6 +180,7 @@ handleCommand ResetState = do
   loadAllImportedModules
 handleCommand (TypeOf val) = handleTypeOf val
 handleCommand (KindOf typ) = handleKindOf typ
+handleCommand (InfoFor typ) = handleInfoFor typ -- TODO
 handleCommand (BrowseModule moduleName) = handleBrowse moduleName
 handleCommand (ShowInfo QueryLoaded) = handleShowLoadedModules
 handleCommand (ShowInfo QueryImport) = handleShowImportedModules
@@ -342,6 +343,20 @@ handleKindOf typ = do
             Left errStack   -> PSCI . outputStrLn . P.prettyPrintMultipleErrors False $ errStack
             Right (kind, _) -> PSCI . outputStrLn . P.prettyPrintKind $ kind
         Nothing -> PSCI $ outputStrLn "Could not find kind"
+
+-- |
+-- Takes a name and prints its information
+--
+handleInfoFor :: P.Type -> PSCI ()
+handleInfoFor typ = do
+  st <- PSCI $ lift get
+  let m = createTemporaryModuleForKind st typ
+      mName = P.ModuleName [P.ProperName "$PSCI"]
+  psciIO $ putStrLn $ show m ++ "\n\n"
+  e <- psciIO .runMake $ make st []
+  case e of
+    Left errs -> PSCI $ printErrors errs
+    Right env' ->  PSCI $ outputStrLn $ show env' ++ "\nTODO: Not implemented yet..."
 
 -- Misc
 

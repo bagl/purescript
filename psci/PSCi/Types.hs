@@ -180,6 +180,9 @@ data Command
   --
   | KindOf P.Type
   -- |
+  -- Find information for a type, class, ... -- TODO
+  | InfoFor P.Type
+  -- |
   -- Shows information about the current state of the REPL
   --
   | ShowInfo ReplQuery

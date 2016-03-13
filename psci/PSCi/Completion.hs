@@ -83,6 +83,7 @@ directiveArg _ Help        = []
 directiveArg _ Show        = map CtxFixed replQueryStrings
 directiveArg _ Type        = [CtxIdentifier]
 directiveArg _ Kind        = [CtxType]
+directiveArg _ Info        = [CtxIdentifier, CtxType]
 
 completeImport :: [String] -> String -> [CompletionContext]
 completeImport ws w' =

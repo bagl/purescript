@@ -84,6 +84,7 @@ parseDirective cmd =
     Show    -> ShowInfo <$> parseReplQuery' (trim arg)
     Type    -> TypeOf <$> parseRest P.parseValue arg
     Kind    -> KindOf <$> parseRest P.parseType arg
+    Info    -> InfoFor <$> parseRest P.parseType arg
 
 -- |
 -- Parses expressions entered at the PSCI repl.
