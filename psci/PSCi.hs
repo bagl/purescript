@@ -49,7 +49,8 @@ import PSCi.Module
 -- |
 -- PSCI monad
 --
-newtype PSCI a = PSCI { runPSCI :: InputT (StateT PSCiState IO) a } deriving (Functor, Applicative, Monad)
+newtype PSCI a = PSCI { runPSCI :: InputT (StateT PSCiState IO) a }
+               deriving (Functor, Applicative, Monad)
 
 psciIO :: IO a -> PSCI a
 psciIO io = PSCI . lift $ lift io
@@ -317,7 +318,9 @@ handleBrowse moduleName = do
     failNotInEnv modName =
         PSCI $ outputStrLn $ "Module '" ++ N.runModuleName modName ++ "' is not valid."
     lookupUnQualifiedModName quaModName st =
-        (\(modName,_,_) -> modName) <$> find ( \(_, _, mayQuaName) -> mayQuaName == Just quaModName) (psciImportedModules st)
+        (\(modName, _, _) -> modName)
+        <$> find ( \(_, _, mayQuaName) -> mayQuaName == Just quaModName)
+                 (psciImportedModules st)
 
 -- |
 -- Takes a value and prints its kind
@@ -336,7 +339,8 @@ handleKindOf typ = do
           let chk = (P.emptyCheckState env') { P.checkCurrentModule = Just mName }
               k   = check (P.kindOf typ') chk
 
-              check :: StateT P.CheckState (ExceptT P.MultipleErrors (Writer P.MultipleErrors)) a -> P.CheckState -> Either P.MultipleErrors (a, P.CheckState)
+              check :: StateT P.CheckState (ExceptT P.MultipleErrors (Writer P.MultipleErrors)) a
+                    -> P.CheckState -> Either P.MultipleErrors (a, P.CheckState)
               check sew cs = fst . runWriter . runExceptT . runStateT sew $ cs
           case k of
             Left errStack   -> PSCI . outputStrLn . P.prettyPrintMultipleErrors False $ errStack
