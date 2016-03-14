@@ -352,11 +352,22 @@ handleInfoFor typ = do
   st <- PSCI $ lift get
   let m = createTemporaryModuleForKind st typ
       mName = P.ModuleName [P.ProperName "$PSCI"]
-  psciIO $ putStrLn $ show m ++ "\n\n"
-  e <- psciIO .runMake $ make st []
+  psciIO $ putStrLn $ "MODULE:\n" ++ show m  ++ "\n\n"
+  psciIO $ putStrLn $ "STATE:\n"  ++ strPSCiState st ++ "\n\n"
+  e <- psciIO . runMake $ make st []
   case e of
     Left errs -> PSCI $ printErrors errs
-    Right env' ->  PSCI $ outputStrLn $ show env' ++ "\nTODO: Not implemented yet..."
+    Right env' ->  psciIO $ putStrLn $ "ENV:\n" ++ show env' ++ "\nTODO: Not implemented yet..."
+  where strPSCiState (PSCiState { psciImportedModules = im
+                                , _psciLoadedModules = lm
+                                , psciForeignFiles = ff
+                                , psciLetBindings = lb
+                                , psciNodeFlags = nf }) =
+            "IMPORTED MODULES:\n" ++ show im ++ "\n" ++
+            "LOADED MODULES:\n" ++ show lm ++ "\n" ++
+            "FOREIGN FILES:\n" ++ show ff ++ "\n" ++
+            "LET BINDINGS:\n" ++ show lb ++ "\n" ++
+            "NODE FLAGS:\n" ++ show nf ++ "\n"
 
 -- Misc
 
