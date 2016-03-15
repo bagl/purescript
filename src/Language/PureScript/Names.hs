@@ -53,7 +53,10 @@ freshIdent' = liftM (GenIdent Nothing) fresh
 -- Proper names, i.e. capitalized names for e.g. module names, type//data constructors.
 --
 newtype ProperName (a :: ProperNameType) = ProperName { runProperName :: String }
-  deriving (Show, Read, Eq, Ord)
+  deriving (Read, Eq, Ord)
+
+instance Show (ProperName a) where
+  show pn = "(ProperName " ++ show (runProperName pn) ++ ")"
 
 instance ToJSON (ProperName a) where
   toJSON = toJSON . runProperName

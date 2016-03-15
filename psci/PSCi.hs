@@ -350,14 +350,14 @@ handleKindOf typ = do
 handleInfoFor :: P.Type -> PSCI ()
 handleInfoFor typ = do
   st <- PSCI $ lift get
-  let m = createTemporaryModuleForKind st typ
-      mName = P.ModuleName [P.ProperName "$PSCI"]
-  psciIO $ putStrLn $ "MODULE:\n" ++ show m  ++ "\n\n"
+  --let m = createTemporaryModuleForKind st typ
+  --    mName = P.ModuleName [P.ProperName "$PSCI"]
+  --psciIO $ putStrLn $ "MODULE:\n" ++ show m  ++ "\n\n"
   psciIO $ putStrLn $ "STATE:\n"  ++ strPSCiState st ++ "\n\n"
-  e <- psciIO . runMake $ make st []
-  case e of
-    Left errs -> PSCI $ printErrors errs
-    Right env' ->  psciIO $ putStrLn $ "ENV:\n" ++ show env' ++ "\nTODO: Not implemented yet..."
+  -- e  <- psciIO . runMake $ make st []
+  -- e' <- psciIO . runMake $ make st [m]
+  -- printEnv e
+  -- printEnv e'
   where strPSCiState (PSCiState { psciImportedModules = im
                                 , _psciLoadedModules = lm
                                 , psciForeignFiles = ff
@@ -368,6 +368,19 @@ handleInfoFor typ = do
             "FOREIGN FILES:\n" ++ show ff ++ "\n" ++
             "LET BINDINGS:\n" ++ show lb ++ "\n" ++
             "NODE FLAGS:\n" ++ show nf ++ "\n"
+        printEnv e =
+          case e of
+            Left errs  -> PSCI $ printErrors errs
+            Right env' ->  psciIO $ putStrLn
+                           $ "ENV:\n"
+                           ++ show (M.mapWithKey pPrintType $ M.filterWithKey (isOfName "Jxxx") $ P.dataConstructors env')
+                           ++ "\nTODO: Not implemented yet..."
+        --isOfName :: String -> N.Qualified (N.ProperName 'ConstructorName) -> Bool
+        isOfName name (N.Qualified _ (N.ProperName pn)) _
+          | pn == name  = True
+        isOfName _  _ _ = False
+
+        pPrintType _ (dataDeclType, N.ProperName typeName, typ, idents) = show dataDeclType ++ " " ++ typeName ++ " :: " ++ P.prettyPrintType typ ++ " " ++ show idents
 
 -- Misc
 
