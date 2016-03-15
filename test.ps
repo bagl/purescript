@@ -1,0 +1,10 @@
+module Test where
+
+data Mxxx a = Nxxx | Jxxx a
+
+class Functor f where
+  (<$>) :: forall a b. (a -> b) -> f a -> f b
+
+instance functorMaybe :: Functor Mxxx where
+  (<$>) _ Nxxx  = Nxxx
+  (<$>) f (Jxxx a) = Jxxx (f a)
